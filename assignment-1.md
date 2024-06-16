@@ -185,8 +185,6 @@ INSERT INTO movie_schedules (movie, screen, start_time, end_time) VALUES
 (4, 9, '2024-06-15 14:00:00', '2024-06-15 16:15:00');
 ```
 
-### Sample Data Insertion
-
 ## Example Table Data
 
 ### Users
