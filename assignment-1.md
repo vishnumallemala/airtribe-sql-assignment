@@ -52,11 +52,43 @@
 
 ## SQL Queries:
 
+### Query to list down all the shows on a given date at a given theatre along with their respective show timings.
+
+```sql
+SELECT T1.theatre_name, T1.name, T2.movie_name, T2.start_time
+FROM
+(SELECT theatres.theatre_name, theatres.city, screens.name, screens.id
+FROM theatres INNER JOIN screens on theatres.id = screens.theatre
+WHERE theatres.id = 1) as T1
+INNER JOIN
+(SELECT movies.movie_name, movie_schedules.start_time, movie_schedules.screen
+FROM movies INNER JOIN movie_schedules on movies.id = movie_schedules.movie
+WHERE movie_schedules.start_time BETWEEN '2024-06-16 00:00:00' AND '2024-06-16 23:59:59') as T2
+ON T1.id = T2.screen;
+```
+
+### Query to list all the shows of a specific movie on given data in a specific city
+
+```sql
+SELECT T1.theatre_name, T1.name, T2.movie_name, T2.start_time
+FROM
+(SELECT theatres.theatre_name, theatres.city, screens.name, screens.id
+FROM theatres INNER JOIN screens on theatres.id = screens.theatre
+WHERE theatres.city in (SELECT id FROM city WHERE name = 'Bangalore')) as T1
+INNER JOIN
+(SELECT movies.movie_name, movie_schedules.start_time, movie_schedules.screen
+FROM movies INNER JOIN movie_schedules on movies.id = movie_schedules.movie
+WHERE movie_schedules.movie in (SELECT id FROM movies WHERE movie_name = 'The Godfather')
+and movie_schedules.start_time BETWEEN '2024-06-16 00:00:00' AND '2024-06-16 23:59:59') as T2
+ON
+T1.id = T2.screen;
+```
+
 ### Table Creation and Sample Data Insertion
 
 - Users
 
-```
+```sql
 CREATE TABLE users (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
@@ -74,7 +106,7 @@ INSERT INTO users (name, email, phone) VALUES
 
 - City
 
-```
+```sql
 CREATE TABLE city (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
@@ -90,7 +122,7 @@ INSERT INTO city (name, state, zipcode) VALUES
 
 - Theatres
 
-```
+```sql
 CREATE TABLE theatres (
   id INT PRIMARY KEY AUTO_INCREMENT,
   theatre_name VARCHAR(255) NOT NULL,
@@ -113,7 +145,7 @@ INSERT INTO theatres (theatre_name, city) VALUES
 
 - Screens
 
-```
+```sql
 CREATE TABLE screens (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
@@ -136,7 +168,7 @@ INSERT INTO screens (name, theatre, capacity) VALUES
 
 - Movies
 
-```
+```sql
 CREATE TABLE movies (
   id INT PRIMARY KEY AUTO_INCREMENT,
   movie_name VARCHAR(255) NOT NULL,
@@ -153,7 +185,7 @@ INSERT INTO movies (movie_name, actors, movie_length) VALUES
 
 - Movie_Schedules
 
-```
+```sql
 CREATE TABLE movie_schedules (
   id INT PRIMARY KEY AUTO_INCREMENT,
   movie INT,
